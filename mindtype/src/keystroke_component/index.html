@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F172A;
+    --navy-light: #1E293B;
+    --slate: #475569;
+    --slate-light: #94A3B8;
+    --border: #E2E8F0;
+    --border-active: #4F46E5;
+    --card-bg: #FFFFFF;
+    --passage-bg: #F8FAFC;
+    --indigo: #4F46E5;
+    --amber: #D97706;
+    --amber-soft: #FEF3C7;
+    --emerald: #059669;
+    --emerald-soft: #DCFCE7;
+    --rose: #E11D48;
+    --rose-soft: #FFE4E6;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 4px 2px 18px 2px;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: transparent;
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .workspace {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Passage Reading Area */
+  .passage-box {
+    background: var(--passage-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .passage-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .passage-tag {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--indigo);
+  }
+
+  .condition-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: #E0F2FE;
+    color: #0369A1;
+  }
+  .condition-badge.calibration { background: var(--emerald-soft); color: #166534; }
+  .condition-badge.load { background: var(--amber-soft); color: #92400E; }
+
+  .passage-text {
+    font-size: 16.5px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: #1E293B;
+    letter-spacing: -0.01em;
+  }
+
+  /* Live Metrics Bar */
+  .live-metrics-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 14px;
+  }
+
+  .metric-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .metric-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--slate-light);
+  }
+
+  .metric-value {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .recording-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rose);
+    box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.2);
+  }
+
+  /* Typing Input Workspace */
+  .textarea-container {
+    position: relative;
+    margin-bottom: 14px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 135px;
+    font-size: 16px;
+    line-height: 1.65;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    background: #FFFFFF;
+    color: var(--navy);
+    resize: vertical;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  textarea:focus {
+    border-color: var(--indigo);
+    box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.14);
+  }
+
+  textarea:disabled {
+    background: #F1F5F9;
+    color: var(--slate);
+    cursor: not-allowed;
+  }
+
+  /* Action Row */
+  .action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .status-hint {
+    font-size: 12.5px;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+
+  button.submit-btn {
+    background: var(--navy);
+    color: #FFFFFF;
+    border: none;
+    padding: 11px 26px;
+    border-radius: 12px;
+    font-size: 14.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button.submit-btn:hover:not(:disabled) {
+    background: var(--indigo);
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  }
+
+  button.submit-btn:disabled {
+    background: #CBD5E1;
+    color: #94A3B8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .alert-toast {
+    display: none;
+    margin-top: 10px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    align-items: center;
+    gap: 8px;
+  }
+  .alert-toast.danger {
+    display: flex;
+    background: var(--rose-soft);
+    color: #9F1239;
+    border: 1px solid #FECDD3;
+  }
+</style>
+</head>
+<body>
+<div class="workspace">
+  <div class="passage-box">
+    <div class="passage-meta">
+      <span class="passage-tag" id="title">Typing Task</span>
+      <span class="condition-badge" id="conditionBadge">Standard</span>
+    </div>
+    <div class="passage-text" id="passage">Loading passage...</div>
+  </div>
+
+  <!-- Live Focused Metrics -->
+  <div class="live-metrics-bar">
+    <div class="metric-item">
+      <span class="metric-label">Elapsed Time</span>
+      <span class="metric-value" id="liveTime">00:00</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Progress</span>
+      <span class="metric-value" id="liveProgress">0%</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Session Quality</span>
+      <span class="metric-value" id="liveQuality">100%</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Status</span>
+      <span class="metric-value" id="liveStatus">
+        <span class="recording-dot"></span> Ready
+      </span>
+    </div>
+  </div>
+
+  <div class="textarea-container">
+    <textarea
+      id="input"
+      placeholder="Begin typing the passage above at your natural pace..."
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    ></textarea>
+  </div>
+
+  <div class="action-row">
+    <div class="status-hint">
+      &bull; Type continuously. Small typos are captured as normal signal.<br>
+      &bull; Pasting is disabled. The Submit button enables once typed to length.
+    </div>
+    <button class="submit-btn" id="submitBtn" disabled>
+      <span>Submit Passage</span> &rarr;
+    </button>
+  </div>
+
+  <div class="alert-toast" id="alertToast"></div>
+</div>
+
+<script>
+function sendToStreamlit(type, data) {
+  var payload = Object.assign({ isStreamlitMessage: true, type: type }, data || {});
+  window.parent.postMessage(payload, "*");
+}
+
+function setFrameHeight() {
+  var h = document.documentElement.scrollHeight;
+  sendToStreamlit("streamlit:setFrameHeight", { height: h + 24 });
+}
+
+function setComponentValue(value) {
+  sendToStreamlit("streamlit:setComponentValue", { value: value, dataType: "json" });
+}
+
+var targetText = "";
+var titleText = "";
+var conditionType = "neutral";
+var initialized = false;
+
+window.addEventListener("message", function (event) {
+  var data = event.data;
+  if (!data || data.type !== "streamlit:render") return;
+  var args = data.args || {};
+  if (!initialized) {
+    targetText = args.paragraph || "";
+    titleText = args.title || "Passage";
+    conditionType = args.condition || "neutral";
+
+    document.getElementById("passage").textContent = targetText;
+    document.getElementById("title").textContent = titleText;
+
+    var badge = document.getElementById("conditionBadge");
+    if (conditionType === "calibration") {
+      badge.textContent = "Baseline Calibration";
+      badge.className = "condition-badge calibration";
+    } else if (conditionType === "load") {
+      badge.textContent = "Cognitive Load Task";
+      badge.className = "condition-badge load";
+    } else {
+      badge.textContent = "Neutral Task";
+      badge.className = "condition-badge";
+    }
+
+    initialized = true;
+    setFrameHeight();
+  }
+});
+
+var textarea = document.getElementById("input");
+var submitBtn = document.getElementById("submitBtn");
+var liveTimeEl = document.getElementById("liveTime");
+var liveProgressEl = document.getElementById("liveProgress");
+var liveQualityEl = document.getElementById("liveQuality");
+var liveStatusEl = document.getElementById("liveStatus");
+var alertToastEl = document.getElementById("alertToast");
+
+var events = [];
+var lastKeyDownTime = null;
+var downTimes = {};
+var startTime = null;
+var timerInterval = null;
+
+var blurCount = 0;
+var visibilityChanges = 0;
+var pasteAttempts = 0;
+var totalUnfocusedMs = 0;
+var blurStartTime = null;
+var longestPauseMs = 0;
+var idleThresholdMs = 4500;
+var idleInterruptions = 0;
+
+function isModifierKey(key) {
+  return [
+    "Shift", "Control", "Alt", "Meta", "CapsLock", "Tab",
+    "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown",
+    "Home", "End", "PageUp", "PageDown"
+  ].indexOf(key) !== -1;
+}
+
+function updateQualityDisplay() {
+  var q = 100 - (pasteAttempts * 35) - ((blurCount + visibilityChanges) * 8) - (idleInterruptions * 6);
+  q = Math.max(0, Math.min(100, q));
+  liveQualityEl.textContent = q + "%";
+}
+
+function startTimer() {
+  if (timerInterval === null) {
+    timerInterval = setInterval(function () {
+      if (startTime !== null) {
+        var elapsedSec = Math.floor((performance.now() - startTime) / 1000);
+        var mins = Math.floor(elapsedSec / 60);
+        var secs = elapsedSec % 60;
+        liveTimeEl.textContent = (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+      }
+    }, 1000);
+  }
+}
+
+textarea.addEventListener("paste", function (e) {
+  e.preventDefault();
+  pasteAttempts++;
+  updateQualityDisplay();
+  alertToastEl.textContent = "Pasting is blocked to preserve keystroke measurement reliability.";
+  alertToastEl.className = "alert-toast danger";
+  setFrameHeight();
+  setTimeout(function () {
+    alertToastEl.className = "alert-toast";
+    setFrameHeight();
+  }, 4000);
+});
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) {
+    visibilityChanges++;
+    blurStartTime = performance.now();
+    updateQualityDisplay();
+  } else {
+    if (blurStartTime !== null) {
+      totalUnfocusedMs += (performance.now() - blurStartTime);
+      blurStartTime = null;
+    }
+  }
+});
+
+window.addEventListener("blur", function () {
+  blurCount++;
+  if (blurStartTime === null) {
+    blurStartTime = performance.now();
+  }
+  updateQualityDisplay();
+});
+
+window.addEventListener("focus", function () {
+  if (blurStartTime !== null) {
+    totalUnfocusedMs += (performance.now() - blurStartTime);
+    blurStartTime = null;
+  }
+});
+
+textarea.addEventListener("keydown", function (e) {
+  if (isModifierKey(e.key)) return;
+  var now = performance.now();
+  if (startTime === null) {
+    startTime = now;
+    startTimer();
+    liveStatusEl.innerHTML = '<span class="recording-dot"></span> Recording';
+  }
+  downTimes[e.code] = now;
+
+  var interKey = lastKeyDownTime === null ? 0 : (now - lastKeyDownTime);
+  lastKeyDownTime = now;
+
+  if (interKey > longestPauseMs && events.length > 0) {
+    longestPauseMs = interKey;
+  }
+  if (interKey >= idleThresholdMs && events.length > 0) {
+    idleInterruptions++;
+    updateQualityDisplay();
+  }
+
+  var isBackspace = e.key === "Backspace" ? 1 : 0;
+  var pendingIndex = events.length;
+
+  events.push({
+    interKeyMs: interKey,
+    dwellMs: 0,
+    isBackspace: isBackspace,
+    isError: 0
+  });
+
+  if (!isBackspace && e.key.length === 1) {
+    setTimeout(function () {
+      var pos = textarea.selectionStart - 1;
+      var typedChar = textarea.value[pos];
+      var targetChar = targetText[pos];
+      if (typedChar !== undefined && typedChar !== targetChar) {
+        events[pendingIndex].isError = 1;
+      }
+      updateProgress();
+    }, 0);
+  } else {
+    setTimeout(updateProgress, 0);
+  }
+});
+
+textarea.addEventListener("keyup", function (e) {
+  if (isModifierKey(e.key)) return;
+  var down = downTimes[e.code];
+  if (down !== undefined) {
+    var dwell = performance.now() - down;
+    for (var i = events.length - 1; i >= 0; i--) {
+      if (events[i].dwellMs === 0) {
+        events[i].dwellMs = dwell;
+        break;
+      }
+    }
+  }
+});
+
+function updateProgress() {
+  var typed = textarea.value;
+  var targetLen = targetText.length;
+  var pct = Math.min(100, Math.round((typed.length / targetLen) * 100));
+  var ready = typed.length >= targetLen;
+
+  liveProgressEl.textContent = pct + "%";
+  if (ready) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = "<span>Submit Passage</span> &check;";
+  } else {
+    submitBtn.disabled = true;
+  }
+  setFrameHeight();
+}
+
+submitBtn.addEventListener("click", function () {
+  if (timerInterval !== null) clearInterval(timerInterval);
+  var totalTimeMs = startTime === null ? 0 : (performance.now() - startTime);
+  if (blurStartTime !== null) {
+    totalUnfocusedMs += (performance.now() - blurStartTime);
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = "<span>Submitted</span> &check;";
+  textarea.disabled = true;
+  liveStatusEl.innerHTML = '<span style="color:#059669;">&check;</span> Complete';
+
+  setComponentValue({
+    events: events,
+    total_time_ms: Math.round(totalTimeMs),
+    char_count: targetText.length,
+    quality: {
+      paste_attempts: pasteAttempts,
+      blur_count: blurCount,
+      visibility_changes: visibilityChanges,
+      total_unfocused_ms: Math.round(totalUnfocusedMs),
+      longest_pause_ms: Math.round(longestPauseMs),
+      idle_interruptions: idleInterruptions,
+      interruption_count: blurCount + visibilityChanges + idleInterruptions
+    }
+  });
+});
+
+sendToStreamlit("streamlit:componentReady", { apiVersion: 1 });
+setFrameHeight();
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+# =========================================================
+# MINDTYPE - Git Ignore
+# =========================================================
+
+# -------------------------
+# Python cache files
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# -------------------------
+# Virtual environments
+# -------------------------
+.venv/
+venv/
+env/
+ENV/
+
+# -------------------------
+# Environment / secrets
+# -------------------------
+.env
+.env.*
+!.env.example
+
+.streamlit/secrets.toml
+
+# -------------------------
+# Jupyter
+# -------------------------
+.ipynb_checkpoints/
+
+# -------------------------
+# Logs / temporary files
+# -------------------------
+*.log
+*.tmp
+*.temp
+
+# -------------------------
+# Testing / coverage
+# -------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# -------------------------
+# Type checking / linters
+# -------------------------
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# -------------------------
+# IDE files
+# -------------------------
+.vscode/
+.idea/
+*.iml
+
+# -------------------------
+# Windows
+# -------------------------
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# -------------------------
+# macOS
+# -------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# -------------------------
+# OS temporary files
+# -------------------------
+*.swp
+*.swo
+
+# -------------------------
+# Build / packaging
+# -------------------------
+build/
+dist/
+*.egg-info/
+
+# -------------------------
+# Node.js generated files
+# Only relevant if present
+# -------------------------
+node_modules/
+
+# -------------------------
+# Streamlit local/cache files
+# -------------------------
+.streamlit/cache/
+
+# -------------------------
+# Project-generated inspection file
+# -------------------------
+project_structure.txt
+
+# Project encryption key - NEVER upload
+models/dsp.key
+models/baselines.enc
